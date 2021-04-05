@@ -52,6 +52,7 @@ Resources:
                   - !Sub "arn:aws:s3:::biomage-source-${Environment}"
                   - !Sub "arn:aws:s3:::biomage-originals-${Environment}"
                   - !Sub "arn:aws:s3:::worker-results-${Environment}"
+                  - !Sub "arn:aws:s3:::plots-tables-${Environment}"
         - PolicyName: !Sub "can-download-objects-from-source-buckets-${Environment}"
           PolicyDocument:
             Version: "2012-10-17"
@@ -69,6 +70,7 @@ Resources:
                 Action: 's3:PutObject'
                 Resource:
                   - !Sub "arn:aws:s3:::worker-results-${Environment}/*"
+                  - !Sub "arn:aws:s3:::plots-tables-${Environment}/*"
         - PolicyName: !Sub "can-push-to-sns-${Environment}"
           PolicyDocument:
             Version: "2012-10-17"
@@ -76,3 +78,17 @@ Resources:
               - Effect: Allow
                 Action: 'sns:Publish'
                 Resource: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:work-results-${Environment}-*"
+        - PolicyName: !Sub "can-get-work-and-report-results-${Environment}"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "states:DescribeActivity"
+                  - "states:DeleteActivity"
+                  - "states:GetActivityTask"
+                  - "states:SendTaskSuccess"
+                  - "states:SendTaskFailure"
+                  - "states:SendTaskHeartbeat"
+                Resource:
+                  - !Sub "arn:aws:states:${AWS::Region}:${AWS::AccountId}:activity:biomage-qc-${Environment}-*"
