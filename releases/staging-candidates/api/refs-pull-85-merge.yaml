@@ -14,7 +14,7 @@ metadata:
     sandboxId: STAGING_SANDBOX_ID
   annotations:
     fluxcd.io/automated: "true"
-    filter.fluxcd.io/chart-image: glob:refs-pull-83-merge-*
+    filter.fluxcd.io/chart-image: glob:refs-pull-85-merge-*
 spec:
   releaseName: api
   chart:
@@ -45,7 +45,7 @@ spec:
     image:
       registry: 242905224710.dkr.ecr.eu-west-1.amazonaws.com
       repository: api
-      tag: refs-pull-83-merge-0812e6c618c6bcfff1484a7ea78ac170c0fd13f9
+      tag: refs-pull-85-merge-f45c304b903c5b9d6424b449c3b643c14ec0cbde
     serviceAccount:
       iamRole: arn:aws:iam::242905224710:role/api-role-staging
 
