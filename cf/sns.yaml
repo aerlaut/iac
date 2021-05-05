@@ -28,7 +28,7 @@ Resources:
   WorkResultsSubscription:
     Type: "AWS::SNS::Subscription"
     Properties:
-      TopicArn: !Ref SNSTopic
+      TopicArn: !Ref WorkResultsTopic
       Endpoint: !If [isProd, "https://api.scp.biomage.net/v1/workResults",
                 !If [isDev, "http://host.docker.internal:3000/v1/workResults",
                 !Sub "https://api-${SandboxID}.scp-${Environment}.biomage.net/v1/workResults"]]
@@ -48,7 +48,7 @@ Resources:
   PipelineResultsSubscription:
     Type: "AWS::SNS::Subscription"
     Properties:
-      TopicArn: !Ref SNSTopic
+      TopicArn: !Ref WorkResultsTopic
       Endpoint: !If [isProd, "https://api.scp.biomage.net/v1/pipelineResults",
                 !If [isDev, "http://host.docker.internal:3000/v1/pipelineResults",
                 !Sub "https://api-${SandboxID}.scp-${Environment}.biomage.net/v1/pipelineResults"]]
@@ -73,7 +73,7 @@ Resources:
   FileUploadSubscription:
     Type: "AWS::SNS::Subscription"
     Properties:
-      TopicArn: !Ref SNSTopic
+      TopicArn: !Ref WorkResultsTopic
       Endpoint: !If [isProd, "https://api.scp.biomage.net/v1/fileUpload",
                 !If [isDev, "http://host.docker.internal:3000/v1/fileUpload",
                 !Sub "https://api-${SandboxID}.scp-${Environment}.biomage.net/v1/fileUpload"]]
@@ -90,3 +90,29 @@ Resources:
       FilterPolicy:
         type:
           - FileUpload
+  FileUploadPolicy:
+    Type: "AWS::SNS::TopicPolicy"
+    Properties:
+      PolicyDocument:
+        Fn::Sub: |-
+          {
+            "Version": "2012-10-17",
+            "Statement": [
+              {
+                "Effect": "Allow",
+                "Principal": {
+                  "Service": "s3.amazonaws.com"  
+                },
+                "Action": [
+                  "SNS:Publish"
+                ],
+                "Resource": "arn:aws:sns:Region:${AWS::AccountId}:file-upload-${Environment}-${SandboxID}",
+                "Condition": {
+                    "ArnLike": { "aws:SourceArn": "arn:aws:s3:::biomage-originals-${Environment}" },
+                    "StringEquals": { "aws:SourceAccount": "${AWS::AccountId}" }
+                }
+              }
+            ]
+          }
+      Topics:
+        - !Ref FileUploadTopic
