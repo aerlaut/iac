@@ -20,7 +20,7 @@ Conditions:
   isDev: !Equals [!Ref Environment, "development"]
 
 Resources: 
-  SNSTopic: 
+  WorkResultsTopic: 
     Type: AWS::SNS::Topic
     Properties: 
       KmsMasterKeyId: "alias/aws/sns"
@@ -65,3 +65,54 @@ Resources:
       FilterPolicy:
         type:
           - PipelineResponse
+  FileUploadTopic: 
+    Type: AWS::SNS::Topic
+    Properties: 
+      KmsMasterKeyId: "alias/aws/sns"
+      TopicName: !Sub "file-upload-${Environment}-${SandboxID}"
+  FileUploadSubscription:
+    Type: 'AWS::SNS::Subscription'
+    Properties:
+      TopicArn: !Ref SNSTopic
+      Endpoint: !If [isProd, "https://api.scp.biomage.net/v1/fileUpload",
+                !If [isDev, "http://host.docker.internal:3000/v1/fileUpload",
+                !Sub "https://api-${SandboxID}.scp-${Environment}.biomage.net/v1/fileUpload"]]
+      Protocol: "https"
+      DeliveryPolicy:
+        healthyRetryPolicy:
+          minDelayTarget: 10
+          maxDelayTarget: 60
+          numRetries: 56
+          numNoDelayRetries: 0
+          numMinDelayRetries: 2
+          numMaxDelayRetries: 16
+          backoffFunction: exponential
+      FilterPolicy:
+        type:
+          - FileUpload
+  FileUploadPolicy:
+    Type: 'AWS::SNS::TopicPolicy'
+    Properties:
+      PolicyDocument:
+        Fn::Sub: |-
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "s3.amazonaws.com"  
+            },
+            "Action": [
+              "SNS:Publish"
+            ],
+            "Resource": "arn:aws:sns:Region:${AWS::AccountId}:file-upload-${Environment}-${SandboxID}",
+            "Condition": {
+                "ArnLike": { "aws:SourceArn": "arn:aws:s3:::biomage-originals-${Environment}" },
+                "StringEquals": { "aws:SourceAccount": "${AWS::AccountId}" }
+            }
+            }
+          ]
+        }
+      Topics:
+        - !Ref FileUploadTopic
