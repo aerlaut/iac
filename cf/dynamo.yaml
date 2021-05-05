@@ -54,7 +54,7 @@ Resources:
     Properties:
       TableName: !Sub "projects-samples-${Environment}"
       AttributeDefinitions:
-        - AttributeName: "projectUui"
+        - AttributeName: "projectUuid"
           AttributeType: "S"
       KeySchema:
         - AttributeName: "projectUuid"
