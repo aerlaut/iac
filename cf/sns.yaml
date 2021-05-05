@@ -90,29 +90,3 @@ Resources:
       FilterPolicy:
         type:
           - FileUpload
-  FileUploadPolicy:
-    Type: "AWS::SNS::TopicPolicy"
-    Properties:
-      PolicyDocument:
-        Fn::Sub: |-
-          {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Principal": {
-                  "Service": "s3.amazonaws.com"  
-                },
-                "Action": [
-                  "SNS:Publish"
-                ],
-                "Resource": "arn:aws:sns:Region:${AWS::AccountId}:file-upload-${Environment}-${SandboxID}",
-                "Condition": {
-                    "ArnLike": { "aws:SourceArn": "arn:aws:s3:::biomage-originals-${Environment}" },
-                    "StringEquals": { "aws:SourceAccount": "${AWS::AccountId}" }
-                }
-              }
-            ]
-          }
-      Topics:
-        - !Ref FileUploadTopic
