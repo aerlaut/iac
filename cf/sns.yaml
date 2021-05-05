@@ -21,12 +21,12 @@ Conditions:
 
 Resources: 
   WorkResultsTopic: 
-    Type: AWS::SNS::Topic
+    Type: "AWS::SNS::Topic"
     Properties: 
       KmsMasterKeyId: "alias/aws/sns"
       TopicName: !Sub "work-results-${Environment}-${SandboxID}"
   WorkResultsSubscription:
-    Type: 'AWS::SNS::Subscription'
+    Type: "AWS::SNS::Subscription"
     Properties:
       TopicArn: !Ref SNSTopic
       Endpoint: !If [isProd, "https://api.scp.biomage.net/v1/workResults",
@@ -46,7 +46,7 @@ Resources:
         type:
           - WorkResponse
   PipelineResultsSubscription:
-    Type: 'AWS::SNS::Subscription'
+    Type: "AWS::SNS::Subscription"
     Properties:
       TopicArn: !Ref SNSTopic
       Endpoint: !If [isProd, "https://api.scp.biomage.net/v1/pipelineResults",
@@ -66,12 +66,12 @@ Resources:
         type:
           - PipelineResponse
   FileUploadTopic: 
-    Type: AWS::SNS::Topic
+    Type: "AWS::SNS::Topic"
     Properties: 
       KmsMasterKeyId: "alias/aws/sns"
       TopicName: !Sub "file-upload-${Environment}-${SandboxID}"
   FileUploadSubscription:
-    Type: 'AWS::SNS::Subscription'
+    Type: "AWS::SNS::Subscription"
     Properties:
       TopicArn: !Ref SNSTopic
       Endpoint: !If [isProd, "https://api.scp.biomage.net/v1/fileUpload",
@@ -90,29 +90,29 @@ Resources:
       FilterPolicy:
         type:
           - FileUpload
-  FileUploadPolicy:
-    Type: 'AWS::SNS::TopicPolicy'
-    Properties:
-      PolicyDocument:
-        Fn::Sub: |-
-          {
-            "Version": "2012-10-17",
-            "Statement": [
-              {
-                "Effect": "Allow",
-                "Principal": {
-                  "Service": "s3.amazonaws.com"  
-                },
-                "Action": [
-                  "SNS:Publish"
-                ],
-                "Resource": "arn:aws:sns:Region:${AWS::AccountId}:file-upload-${Environment}-${SandboxID}",
-                "Condition": {
-                    "ArnLike": { "aws:SourceArn": "arn:aws:s3:::biomage-originals-${Environment}" },
-                    "StringEquals": { "aws:SourceAccount": "${AWS::AccountId}" }
-                }
-              }
-            ]
-          }
-      Topics:
-        - !Ref FileUploadTopic
+  # FileUploadPolicy:
+  #   Type: "AWS::SNS::TopicPolicy"
+  #   Properties:
+  #     PolicyDocument:
+  #       Fn::Sub: |-
+  #         {
+  #           "Version": "2012-10-17",
+  #           "Statement": [
+  #             {
+  #               "Effect": "Allow",
+  #               "Principal": {
+  #                 "Service": "s3.amazonaws.com"  
+  #               },
+  #               "Action": [
+  #                 "SNS:Publish"
+  #               ],
+  #               "Resource": "arn:aws:sns:Region:${AWS::AccountId}:file-upload-${Environment}-${SandboxID}",
+  #               "Condition": {
+  #                   "ArnLike": { "aws:SourceArn": "arn:aws:s3:::biomage-originals-${Environment}" },
+  #                   "StringEquals": { "aws:SourceAccount": "${AWS::AccountId}" }
+  #               }
+  #             }
+  #           ]
+  #         }
+  #     Topics:
+  #       - !Ref FileUploadTopic
