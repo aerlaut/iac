@@ -49,3 +49,14 @@ Resources:
         - AttributeName: "experimentId"
           KeyType: "HASH"
       BillingMode: "PAY_PER_REQUEST"
+  ProjectSamplesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "projects-samples-${Environment}"
+      AttributeDefinitions:
+        - AttributeName: "projectId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "projectId"
+          KeyType: "HASH"
+      BillingMode: "PAY_PER_REQUEST"
