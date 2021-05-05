@@ -54,9 +54,9 @@ Resources:
     Properties:
       TableName: !Sub "projects-samples-${Environment}"
       AttributeDefinitions:
-        - AttributeName: "projectId"
+        - AttributeName: "projectUui"
           AttributeType: "S"
       KeySchema:
-        - AttributeName: "projectId"
+        - AttributeName: "projectUuid"
           KeyType: "HASH"
       BillingMode: "PAY_PER_REQUEST"
