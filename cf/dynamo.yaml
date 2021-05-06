@@ -52,7 +52,7 @@ Resources:
   ProjectsTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub "projects-${Environment}"
+      TableName: !Sub "projects-samples-${Environment}"
       AttributeDefinitions:
         - AttributeName: "projectUuid"
           AttributeType: "S"
