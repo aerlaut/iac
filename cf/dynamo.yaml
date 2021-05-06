@@ -63,4 +63,13 @@ Resources:
           KeyType: "HASH"
         - AttributeName: "experimentId"
           KeyType: "RANGE"
+      GlobalSecondaryIndexes:
+        - IndexName: gsiSamplesByExperiment
+          KeySchema: 
+            - AttributeName: "experimentId"
+              KeyType: "HASH"
+          Projection:
+            NonKeyAttributes:
+              - samples
+            ProjectionType: INCLUDE
       BillingMode: "PAY_PER_REQUEST"
