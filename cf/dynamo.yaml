@@ -69,5 +69,7 @@ Resources:
       AttributeDefinitions:
         - AttributeName: "projectId"
           AttributeType: "S"
+      KeySchema:
+        - AttributeName: "projectId"
           KeyType: "HASH"
       BillingMode: "PAY_PER_REQUEST"
