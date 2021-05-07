@@ -45,6 +45,8 @@ Resources:
       AttributeDefinitions:
         - AttributeName: "experimentId"
           AttributeType: "S"
+        - AttributeName: "projectId"
+          AttributeType: "S"
       KeySchema:
         - AttributeName: "experimentId"
           KeyType: "HASH"
