@@ -45,7 +45,7 @@ Resources:
       AttributeDefinitions:
         - AttributeName: "experimentId"
           AttributeType: "S"
-        - AttributeName: "projectId"
+        - AttributeName: "projectUuid"
           AttributeType: "S"
       KeySchema:
         - AttributeName: "experimentId"
@@ -53,7 +53,7 @@ Resources:
       GlobalSecondaryIndexes:
         - IndexName: gsiExperimentid
           KeySchema: 
-            - AttributeName: "projectId"
+            - AttributeName: "projectUuid"
               KeyType: "HASH"
             - AttributeName: "experimentId"
               KeyType: "RANGE"
@@ -67,9 +67,9 @@ Resources:
     Properties:
       TableName: !Sub "projects-${Environment}"
       AttributeDefinitions:
-        - AttributeName: "projectId"
+        - AttributeName: "projectUuid"
           AttributeType: "S"
       KeySchema:
-        - AttributeName: "projectId"
+        - AttributeName: "projectUuid"
           KeyType: "HASH"
       BillingMode: "PAY_PER_REQUEST"
