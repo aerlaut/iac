@@ -48,4 +48,24 @@ Resources:
       KeySchema:
         - AttributeName: "experimentId"
           KeyType: "HASH"
+      GlobalSecondaryIndexes:
+        - IndexName: gsiExperimentid
+          KeySchema: 
+            - AttributeName: "projectId"
+              KeyType: "HASH"
+            - AttributeName: "experimentId"
+              KeyType: "RANGE"
+          Projection:
+            NonKeyAttributes:
+              - samples
+            ProjectionType: INCLUDE
+      BillingMode: "PAY_PER_REQUEST"
+  ProjectsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "projects-${Environment}"
+      AttributeDefinitions:
+        - AttributeName: "projectId"
+          AttributeType: "S"
+          KeyType: "HASH"
       BillingMode: "PAY_PER_REQUEST"
