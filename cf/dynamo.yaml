@@ -32,7 +32,10 @@ Resources:
             - AttributeName: "experimentId"
               KeyType: "RANGE"
           Projection:
-            ProjectionType: KEYS_ONLY
+            NonKeyAttributes:
+              - experimentId
+              - rbac_can_write
+            ProjectionType: INCLUDE
       BillingMode: "PAY_PER_REQUEST"
   PlotsTablesTable:
     Type: AWS::DynamoDB::Table
