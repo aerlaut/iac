@@ -1,64 +1,71 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    sandboxId: pipeline-38
-  name: ui-pipeline-38
+    sandboxId: marcellp-auth-e2e
+  name: ui-marcellp-auth-e2e
 ---
 apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
 metadata:
   annotations:
-    filter.fluxcd.io/chart-image: glob:refs-heads-master-*
-    fluxcd.io/automated: 'false'
+    filter.fluxcd.io/chart-image: glob:refs-pull-250-merge-*
+    fluxcd.io/automated: 'true'
   labels:
-    sandboxId: pipeline-38
+    sandboxId: marcellp-auth-e2e
   name: ui
-  namespace: ui-pipeline-38
+  namespace: ui-marcellp-auth-e2e
 spec:
   chart:
     git: git@github.com:biomage-ltd/iac
     path: charts/nodejs
-    ref: 3319fbff242f2810ad230681060837d71431aa5e
+    ref: refs/heads/master
   releaseName: ui
   values:
     biomageCi:
       repo: biomage-ltd/ui
-      sandboxId: pipeline-38
+      sandboxId: marcellp-auth-e2e
     image:
       registry: 242905224710.dkr.ecr.eu-west-1.amazonaws.com
       repository: ui
-      tag: refs-heads-master-41b64c620315afb668985a89946fe716d50c5b23
+      tag: refs-pull-250-merge-4f6c744667d6ee6405af20abf137f0d361b17d14
     kubernetes:
       env: staging
+    livenessProbe:
+      path: /data-management
+    readinessProbe:
+      path: /data-management
+    serviceAccount:
+      iamRole: arn:aws:iam::242905224710:role/ui-role-staging
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    sandboxId: pipeline-38
-  name: api-pipeline-38
+    sandboxId: marcellp-auth-e2e
+  name: api-marcellp-auth-e2e
 ---
 apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
 metadata:
   annotations:
-    filter.fluxcd.io/chart-image: glob:refs-heads-master-*
-    fluxcd.io/automated: 'false'
+    filter.fluxcd.io/chart-image: glob:refs-pull-110-merge-*
+    fluxcd.io/automated: 'true'
   labels:
-    sandboxId: pipeline-38
+    sandboxId: marcellp-auth-e2e
   name: api
-  namespace: api-pipeline-38
+  namespace: api-marcellp-auth-e2e
 spec:
   chart:
     git: git@github.com:biomage-ltd/iac
     path: charts/nodejs
-    ref: 3319fbff242f2810ad230681060837d71431aa5e
+    ref: refs/heads/master
   releaseName: api
   values:
     biomageCi:
       repo: biomage-ltd/api
-      sandboxId: pipeline-38
+      sandboxId: marcellp-auth-e2e
     hpa:
       enabled: true
       maxReplicas: 10
@@ -67,7 +74,7 @@ spec:
     image:
       registry: 242905224710.dkr.ecr.eu-west-1.amazonaws.com
       repository: api
-      tag: refs-heads-master-689dd8f4d40e4a61383315d1d9f868dda499ba0e
+      tag: refs-pull-110-merge-6abbad48bb99cc6454aa93554fe5f967555fe1a8
     ingress:
       annotations:
         alb.ingress.kubernetes.io/healthcheck-path: /v1/health
@@ -90,32 +97,32 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    sandboxId: pipeline-38
-  name: worker-pipeline-38
+    sandboxId: marcellp-auth-e2e
+  name: worker-marcellp-auth-e2e
 ---
 apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
 metadata:
   annotations:
-    filter.fluxcd.io/python: glob:refs-heads-master-*-python
-    filter.fluxcd.io/r: glob:refs-heads-master-*-r
+    filter.fluxcd.io/python: glob:refs-heads-develop-*-python
+    filter.fluxcd.io/r: glob:refs-heads-develop-*-r
     fluxcd.io/automated: 'false'
   labels:
-    sandboxId: pipeline-38
+    sandboxId: marcellp-auth-e2e
   name: worker
-  namespace: worker-pipeline-38
+  namespace: worker-marcellp-auth-e2e
 spec:
   chart:
     git: git@github.com:biomage-ltd/worker
     path: chart-infra/
-    ref: a0cb375d30c06ad5ac16394dd4efd2a36d36baf8
+    ref: 52cb31678872f81d96f41a2e69c781501dd1ee0a
   releaseName: worker
   values:
     python:
-      image: 242905224710.dkr.ecr.eu-west-1.amazonaws.com/worker:refs-heads-master-a0cb375d30c06ad5ac16394dd4efd2a36d36baf8-python
+      image: 242905224710.dkr.ecr.eu-west-1.amazonaws.com/worker:refs-heads-develop-52cb31678872f81d96f41a2e69c781501dd1ee0a-python
     r:
-      image: 242905224710.dkr.ecr.eu-west-1.amazonaws.com/worker:refs-heads-master-a0cb375d30c06ad5ac16394dd4efd2a36d36baf8-r
-    sandboxId: pipeline-38
+      image: 242905224710.dkr.ecr.eu-west-1.amazonaws.com/worker:refs-heads-develop-52cb31678872f81d96f41a2e69c781501dd1ee0a-r
+    sandboxId: marcellp-auth-e2e
     serviceAccount:
       iamRole: arn:aws:iam::242905224710:role/worker-role-staging
 ---
@@ -123,29 +130,29 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    sandboxId: pipeline-38
-  name: pipeline-pipeline-38
+    sandboxId: marcellp-auth-e2e
+  name: pipeline-marcellp-auth-e2e
 ---
 apiVersion: helm.fluxcd.io/v1
 kind: HelmRelease
 metadata:
   annotations:
-    filter.fluxcd.io/qc-runner: glob:refs-pull-38-merge-*-qc-runner
+    filter.fluxcd.io/qc-runner: glob:refs-heads-develop-*-qc-runner
     filter.fluxcd.io/remoter-client: FILLED_IN_BY_CI
     filter.fluxcd.io/remoter-server: FILLED_IN_BY_CI
-    fluxcd.io/automated: 'true'
+    fluxcd.io/automated: 'false'
   labels:
-    sandboxId: pipeline-38
+    sandboxId: marcellp-auth-e2e
   name: pipeline
-  namespace: pipeline-pipeline-38
+  namespace: pipeline-marcellp-auth-e2e
 spec:
   chart:
     git: git@github.com:biomage-ltd/pipeline
     path: chart-infra/
-    ref: master
+    ref: b48ae80a6becccf16bdb5246c56569071b6ed135
   releaseName: pipeline
   values:
     qc-runner:
-      image: 242905224710.dkr.ecr.eu-west-1.amazonaws.com/pipeline:refs-pull-38-merge-3b811a9118734197644d958df3573009a61c9e64-qc-runner
+      image: 242905224710.dkr.ecr.eu-west-1.amazonaws.com/pipeline:refs-heads-develop-b48ae80a6becccf16bdb5246c56569071b6ed135-qc-runner
     serviceAccount:
       iamRole: arn:aws:iam::242905224710:role/pipeline-role-staging
